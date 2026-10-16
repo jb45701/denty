@@ -11,17 +11,21 @@ Built through the Den pipeline (orchestrator → coder → reviewer, retry cap 6
 ## Repo layout
 
 ```
-src/           Den'Ty engine + game code (TypeScript)
+src/engine/    pure Den'Ty engine: constants, types, state store, seeded RNG
+src/game/      game content: event data modules, endings, adversary paths (later phases)
+src/ui/        browser text-first UI (later phase)
 docs/          scope lock, design brief, event content
-tests/         unit tests + scripted playthrough snapshots
 ```
 
-## Commands (filled in at scaffold)
+Unit tests are co-located next to their source as `foo.spec.ts` (per AGENTS.md).
+
+## Commands
 
 ```sh
 npm install
-npm test
-npm run build
+npm test        # vitest run — engine unit tests
+npm run build   # tsc --noEmit && vite build
+npm run dev     # vite dev server
 ```
 
 ## Lane pact
