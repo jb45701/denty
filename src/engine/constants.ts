@@ -89,3 +89,31 @@ export const REPORT_HONESTY_MAX = 0.99;
 // Escalation handled honestly. DESIGN_BRIEF: "escalation handled honestly (-12)".
 export const ESCALATION_HONEST_DRIFT_RELIEF = 12;
 
+// Drift thresholds. DESIGN_BRIEF: "Displayed values perturbed once Drift >= 40";
+// "At Drift >= 80: one choice per memo may silently flip its effect".
+export const DRIFT_PERTURBATION_THRESHOLD = 40;
+export const DRIFT_FLIP_THRESHOLD = 80;
+
+// Drift accrual. DESIGN_BRIEF: unverified delegation "small", ignored memo
+// "medium", accepted dishonest report "large". The brief fixes the ordering,
+// not the numbers; the delegation cost stays DISPATCH_DRIFT_PER_VERDICT (1) so
+// the dispatch loop has one source for it, and the rest scale from there.
+export const DRIFT_IGNORED_MEMO = 3;
+export const DRIFT_ACCEPTED_DISHONEST_REPORT = 6;
+
+// A quiet week (zero dispatches). DESIGN_BRIEF lists it as a relief that is
+// "never realistically optimal"; priced below VERIFY so it never becomes one.
+export const DRIFT_QUIET_WEEK_RELIEF = 2;
+
+// Scrutiny check at report time (DESIGN_BRIEF "Scrutiny check at report time").
+// Difficulty 45 against a starting Scrutiny of 35 reads as a 40% honest read;
+// at Scrutiny 60 it is a 65% read. The brief fixes the check, not the number.
+export const SCRUTINY_REPORT_DIFFICULTY = 45;
+
+// Displayed action costs may be false at Drift >= 80. Half of the choices in a
+// high-Drift week advertise a price one action away from the truth.
+export const DISPLAY_COST_LIE_CHANCE = 0.5;
+
+// The may-flip chance at exactly Drift 80; it ramps linearly to 1.0 at 100.
+export const FLIP_BASE_PROBABILITY = 0.5;
+

@@ -16,12 +16,13 @@
  *   - a ticket processed in week N is not processed again in week N, so ticking
  *     the same week twice is a no-op and consumes no randomness.
  *
- * Drift: every verdict is an unverified delegation outcome, so it costs
- * DISPATCH_DRIFT_PER_VERDICT (DESIGN_BRIEF: "+Drift on every unverified
- * delegation outcome (small)").
+ * Drift: every verdict is an unverified delegation outcome. The accrual is
+ * routed through drift.ts (`DRIFT_DELTA.unverifiedDelegation`) so the loop and
+ * the Drift system share one taxonomy (DESIGN_BRIEF: "+Drift on every
+ * unverified delegation outcome (small)").
  */
 
-import { DISPATCH_DRIFT_PER_VERDICT } from './constants';
+import { accrueDrift } from './drift';
 import type {
   DispatchOptions,
   DispatchState,
@@ -33,7 +34,6 @@ import type { TicketRequest } from './event-types';
 import { buildEscalationMemo } from './escalation';
 import type { EscalationMemo } from './escalation-types';
 import type { Rng } from './rng';
-import { adjustDrift } from './state';
 import { ackTicket, applyVerdict, beginRework, createTicket, recordMissedAck } from './tickets';
 import type { GameState } from './types';
 import { unitSpec } from './units';
@@ -176,7 +176,10 @@ export function tickDispatchWeek(
     ticket = { ...applied.ticket, lastTickWeek: week };
     tickets[index] = ticket;
     reports.push(applied.report);
-    nextGame = adjustDrift(nextGame, DISPATCH_DRIFT_PER_VERDICT);
+    nextGame = accrueDrift(nextGame, 'unverifiedDelegation', {
+      eventId: ticket.eventId,
+      ticketId: ticket.id,
+    }).state;
     log.push(applied.report.summary);
 
     transitions.push({
