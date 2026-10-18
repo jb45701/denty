@@ -59,3 +59,33 @@ export const CHECK_THRESHOLD_MAX = 95;
 export const VERIFY_DRIFT_RELIEF = 8;
 export const VERIFY_COMPOSURE_COST = 4;
 
+// Retry / escalation counter. SCOPE_LOCK: "a retry counter ticking toward
+// escalation — cap 6, same as the real pipeline". At retry 6 the ticket is
+// escalated and is never reviewed again.
+export const RETRY_ESCALATION_THRESHOLD = 6;
+
+// Review verdict model (DESIGN_BRIEF: "seeded probabilities modulated by ticket
+// type and Drift"; the brief fixes the shape, not the numbers, so the engine
+// owns one legible curve — see verdicts.ts).
+export const VERDICT_APPROVE_MIN = 0.05;
+export const VERDICT_APPROVE_MAX = 0.95;
+// At Drift 40 this is -16pp; at Drift 100 it is -40pp.
+export const VERDICT_DRIFT_PENALTY_PER_POINT = 0.004;
+// A ticket already sent back four times is not getting better.
+export const VERDICT_RETRY_PENALTY = 0.04;
+
+// Dispatch loop Drift accrual. DESIGN_BRIEF: "+Drift on every unverified
+// delegation outcome (small)". Every verdict is treated as unverified until the
+// player verifies it, so each review cycle costs one point.
+export const DISPATCH_DRIFT_PER_VERDICT = 1;
+
+// Report honesty. DESIGN_BRIEF: reports "may be dishonest (reliability + Drift)".
+// Drift eats into the cell's reliability; the floor keeps a report possibly
+// honest and the ceiling keeps it possibly dishonest.
+export const REPORT_HONESTY_DRIFT_DIVISOR = 250;
+export const REPORT_HONESTY_MIN = 0.05;
+export const REPORT_HONESTY_MAX = 0.99;
+
+// Escalation handled honestly. DESIGN_BRIEF: "escalation handled honestly (-12)".
+export const ESCALATION_HONEST_DRIFT_RELIEF = 12;
+
